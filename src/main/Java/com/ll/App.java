@@ -10,6 +10,7 @@ public class App {
     List<Quotation> quotations = new ArrayList<>();
 
     int lastQutotationId = 0;
+
     void run() {
 
         System.out.println("== 명언앱 ==");
@@ -19,6 +20,10 @@ public class App {
 
             String cmd = scanner.nextLine();
 
+            Rq rq = new Rq(cmd);
+            System.out.println(rq.getAction());
+            System.out.println(rq.getParamAsInt("id",0));
+
             if (cmd.equals("종료")) {
                 break;
             } else if (cmd.equals("등록")) {
@@ -27,6 +32,8 @@ public class App {
                 actionList();
             } else if (cmd.startsWith("삭제?")) {
                 actionRemove(cmd);
+            } else if (cmd.startsWith("수정?")) {
+                actionModify(cmd);
             }
         }
     }
@@ -57,6 +64,25 @@ public class App {
     }
 
     void actionRemove(String cmd) {
+        int id = getParamAsInt(cmd, "id", 0);
+
+        if (id == 0) {
+            System.out.println("id를 정확히 입력하세요.");
+        }
+        System.out.printf("%d번 명언을 삭제합니다.\n",id);
+    }
+
+    void actionModify(String cmd) {
+        int id = getParamAsInt(cmd, "id", 0);
+
+        if (id == 0) {
+            System.out.println("id를 정확히 입력해주세요.");
+            return;
+        }
+        System.out.printf("%d번 명언을 수정합니다.\n", id);
+    }
+
+    int getParamAsInt(String cmd, String paramName, int defultValue) {
         String[] cmdBits = cmd.split("\\?", 2);
         String action = cmdBits[0];
         String queryStr = cmdBits[1];
@@ -65,15 +91,23 @@ public class App {
 
         int id = 0;
         for (int i = 0; i < queryStrBits.length; i++) {
-            String[] queryParamBits = queryStr.split("=");
-            String paramName = queryParamBits[0];
+            String queryParam = queryStrBits[i];
+            String[] queryParamBits = queryParam.split("=");
+
+            String paramName_ = queryParamBits[0];
             String paramValue = queryParamBits[1];
 
-            if (paramName.equals("id")) {
-                id = Integer.parseInt(paramValue);
+            if (paramName_.equals("id")) {
+                try {
+                    return Integer.parseInt(paramValue);
+                } catch (NumberFormatException e) {
+                    return defultValue;
+                }
+
             }
-            System.out.printf("%d번 명령이 삭제되었습니다.\n", id);
+            System.out.printf("%d번 명령이 수정되었습니다.\n", id);
 
         }
+        return defultValue;
     }
 }
