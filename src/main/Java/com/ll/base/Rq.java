@@ -1,13 +1,15 @@
-package com.ll;
+package com.ll.base;
+
+import com.ll.standard.util.Ut;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Rq {
-    String cmd;
-    String action;
-    String queryStr;
-    Map<String, String> paramsMap;
+    private String cmd;
+    private String action;
+    private String queryStr;
+    private Map<String, String> paramsMap;
 
     public Rq(String cmd) {
         paramsMap = new HashMap<>();
@@ -36,19 +38,11 @@ public class Rq {
 
         }
     }
-
-    String getAction() {
+    public String getAction() {
         return action;
     }
 
-    int getParamAsInt(String paramName, int defultValue) {
-       String paramValue = paramsMap.get(paramName);
-
-       if (paramValue != null){
-           try {
-               return Integer.parseInt(paramValue);
-           } catch (NumberFormatException e){}
-       }
-        return defultValue;
+   public int getParamAsInt(String paramName, int defultValue) {
+        return Ut.str.parseInt(paramsMap.get(paramName), 0 );
     }
 }
